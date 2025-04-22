@@ -1,102 +1,837 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import {
+  Menu,
+  X,
+  Mail,
+  Github as GitHub,
+  Linkedin,
+  ExternalLink,
+  ChevronDown,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = document.querySelectorAll("section");
+      const scrollPosition = window.scrollY + 100;
+
+      sections.forEach((section) => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+        const sectionId = section.getAttribute("id");
+
+        if (
+          scrollPosition >= sectionTop &&
+          scrollPosition < sectionTop + sectionHeight &&
+          sectionId
+        ) {
+          setActiveSection(sectionId);
+        }
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      window.scrollTo({
+        top: section.offsetTop - 80,
+        behavior: "smooth",
+      });
+      setActiveSection(sectionId);
+      setIsMenuOpen(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <a href="#" className="text-xl font-bold">
+            Rohit Sontamu
           </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex space-x-8">
+            {[
+              "home",
+              "about",
+              "skills",
+              "projects",
+              "training",
+              "education",
+              "contact",
+            ].map((item) => (
+              <button
+                key={item}
+                onClick={() => scrollToSection(item)}
+                className={`text-sm font-medium hover:text-primary transition-colors ${
+                  activeSection === item
+                    ? "text-primary"
+                    : "text-muted-foreground"
+                }`}
+              >
+                {item.charAt(0).toUpperCase() + item.slice(1)}
+              </button>
+            ))}
+          </nav>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            Read our docs
-          </a>
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden bg-background border-b">
+            <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
+              {[
+                "home",
+                "about",
+                "skills",
+                "projects",
+                "training",
+                "education",
+                "contact",
+              ].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => scrollToSection(item)}
+                  className={`text-sm font-medium hover:text-primary transition-colors ${
+                    activeSection === item
+                      ? "text-primary"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  {item.charAt(0).toUpperCase() + item.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </header>
+
+      <main>
+        {/* Hero Section */}
+        <section id="home" className="min-h-screen flex items-center pt-20">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+              <div className="flex-1">
+                <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                  Hi, I&apos;m <span className="text-primary">Sontamu Rohit Kumar Reddy</span>
+                </h1>
+                <p className="text-xl md:text-2xl text-muted-foreground mb-8">
+                  Computer Science Student & Machine Learning Enthusiast
+                </p>
+                <div className="flex space-x-4">
+                  <Button onClick={() => scrollToSection("contact")}>
+                    Contact Me
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => scrollToSection("projects")}
+                  >
+                    View Projects
+                  </Button>
+                </div>
+                <div className="flex mt-8 space-x-4">
+                  <a
+                    href="https://www.linkedin.com/in/rohitsontamu/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <Linkedin size={24} />
+                  </a>
+                  <a
+                    href="https://github.com/Rohitsontamu"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <GitHub size={24} />
+                  </a>
+                  <a
+                    href="mailto:sontamurohitkumarreddy@gmail.com"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <Mail size={24} />
+                  </a>
+                </div>
+              </div>
+              <div className="flex-1 flex justify-center">
+                <div className="w-64 h-64 md:w-90 md:h-90 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Image
+                    src="/profile.png"
+                    alt="Profile Picture"
+                    width={300}
+                    height={300}
+                    className="rounded-full object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce hidden md:block">
+              <ChevronDown size={24} />
+            </div>
+          </div>
+        </section>
+
+        {/* About Section */}
+        <section id="about" className="py-20 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold mb-12 text-center">About Me</h2>
+            <div className="max-w-3xl mx-auto">
+              <p className="text-lg mb-6">
+                I&apos;m a Computer Science and Engineering student at Lovely
+                Professional University with a strong passion for Machine
+                Learning and Data Science. I enjoy solving real-world problems
+                through code and continuously strive to expand my knowledge and
+                skills in these areas.
+              </p>
+              <p className="text-lg mb-6">
+                My technical journey has given me hands-on experience with tools
+                like MySQL, VS Code, Excel, and Tableau. I&apos;m particularly
+                drawn to Machine Learning and Exploratory Data Analysis (EDA),
+                and I&apos;ve had the opportunity to apply these concepts in
+                various projects that highlight my analytical and
+                problem-solving abilities.
+              </p>
+
+              <p className="text-lg">
+                As a team player with strong adaptability and time management
+                skills, I am constantly seeking opportunities to apply my
+                knowledge in real-world scenarios and contribute to innovative
+                solutions in the field of data science.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Skills Section */}
+        <section id="skills" className="py-20">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold mb-12 text-center">Skills</h2>
+
+            <div className="max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Programming Languages */}
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold mb-4">
+                      Programming Languages
+                    </h3>
+                    <div className="space-y-4">
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>Python</span>
+                          <span>90%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "90%" }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>Java</span>
+                          <span>85%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "85%" }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>Html & CSS</span>
+                          <span>70%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "70%" }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>SQL</span>
+                          <span>80%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "80%" }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Tools & Platforms */}
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold mb-4">
+                      Tools & Platforms
+                    </h3>
+                    <div className="space-y-4">
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>MySQL</span>
+                          <span>85%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "85%" }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>Machine Learning</span>
+                          <span>80%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "80%" }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>Tableau</span>
+                          <span>75%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "75%" }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>Excel</span>
+                          <span>85%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "85%" }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>Docker</span>
+                          <span>95%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "95%" }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>Jenkins</span>
+                          <span>80%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "80%" }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Soft Skills */}
+                <Card className="md:col-span-2">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold mb-4">Soft Skills</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="bg-primary/10 p-4 rounded-lg">
+                        <h4 className="font-semibold mb-2">Team Player</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Excellent collaboration and communication in group
+                          projects
+                        </p>
+                      </div>
+                      <div className="bg-primary/10 p-4 rounded-lg">
+                        <h4 className="font-semibold mb-2">Adaptability</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Quick to learn and adapt to new technologies and
+                          situations
+                        </p>
+                      </div>
+                      <div className="bg-primary/10 p-4 rounded-lg">
+                        <h4 className="font-semibold mb-2">Time Management</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Efficient in handling multiple tasks and meeting
+                          deadlines
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Projects Section */}
+        <section id="projects" className="py-20 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold mb-12 text-center">Projects</h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {/* Project 1 */}
+              <Card className="overflow-hidden">
+                <div className="h-48 bg-primary/20 flex items-center justify-center">
+                  <Image
+                    src="/bird.png"
+                    alt="Profile Picture"
+                    width={300}
+                    height={300}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-2">
+                    Birdcall Recognizer
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    A scalable bird call classification system for identifying
+                    Indian bird species using supervised learning techniques.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      Python
+                    </span>
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      TensorFlow
+                    </span>
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      Librosa
+                    </span>
+                  </div>
+                  <div className="flex justify-end">
+                    <a
+                      href="https://github.com/Rohitsontamu/BirdCall-Recognizer.git"
+                      className="text-primary hover:underline flex items-center gap-1"
+                    >
+                      View Project <ExternalLink size={16} />
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Project 2 */}
+              <Card className="overflow-hidden">
+                <div className="h-48 bg-primary/20 flex items-center justify-center">
+                  <Image
+                    src="/imageQuality.png"
+                    alt="Profile Picture"
+                    width={300}
+                    height={300}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-2">
+                    Image Quality Assessment
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    Processed 10,073 images with advanced quality features and
+                    achieved high accuracy in quality prediction.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      Python
+                    </span>
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      OpenCV
+                    </span>
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      scikit-learn
+                    </span>
+                  </div>
+                  <div className="flex justify-end">
+                    <a
+                      href="https://github.com/Rohitsontamu/Image-quality-assessment-cnn.git"
+                      className="text-primary hover:underline flex items-center gap-1"
+                    >
+                      View Project <ExternalLink size={16} />
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Project 3 */}
+              <Card className="overflow-hidden">
+                <div className="h-48 bg-primary/20 flex items-center justify-center">
+                  <Image
+                    src="/crimeData.webp"
+                    alt="Profile Picture"
+                    width={300}
+                    height={300}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-2">
+                    Crime Data Analysis
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    Conducted EDA on Crimes in India dataset to identify
+                    patterns and trends across states and categories.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      Python
+                    </span>
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      Pandas
+                    </span>
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      Seaborn
+                    </span>
+                  </div>
+                  <div className="flex justify-end">
+                    <a
+                      href="https://github.com/Rohitsontamu/EDA-on-CRIIMES-IN-INDIA.git"
+                      className="text-primary hover:underline flex items-center gap-1"
+                    >
+                      View Project <ExternalLink size={16} />
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Training Section */}
+        <section id="training" className="py-20">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold mb-12 text-center">
+              Training & Certificates
+            </h2>
+
+            <div className="max-w-4xl mx-auto">
+              <div className="space-y-8">
+                {/* GeeksforGeeks Training */}
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex flex-col md:flex-row justify-between mb-4">
+                      <h3 className="text-xl font-bold">
+                        Data Science and Machine Learning
+                      </h3>
+                      <p className="text-muted-foreground">Jun &apos;24 – Jul &apos;24</p>
+                    </div>
+                    <p className="text-muted-foreground mb-2">GeeksforGeeks</p>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li>
+                        Strengthened problem-solving skills through hands-on
+                        coding challenges
+                      </li>
+                      <li>
+                        Learned key Machine Learning techniques and model
+                        evaluation metrics
+                      </li>
+                      <li>Worked on real-world datasets and built ML models</li>
+                      <li>
+                        Explored deep learning fundamentals and neural networks
+                      </li>
+                    </ul>
+                    <div className="flex justify-end">
+                      <a
+                        href="/GFG_certificTE.pdf"
+                        className="text-primary hover:underline flex items-center gap-1"
+                      >
+                        View Certificate <ExternalLink size={16} />
+                      </a>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Certificates */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <Card>
+                    <CardContent className="p-6">
+                      <h3 className="text-xl font-bold mb-2">
+                        IBM DevOps and Software Engineering
+                      </h3>
+                      <p className="text-muted-foreground mb-2">IBM</p>
+                      <p className="text-sm mb-4">Issued: Feb &apos;25</p>
+                      <div className="flex justify-end">
+                        <a
+                          href="/Coursera_5UJN4NPJ848W.pdf"
+                          className="text-primary hover:underline flex items-center gap-1"
+                        >
+                          View Certificate <ExternalLink size={16} />
+                        </a>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-6">
+                      <h3 className="text-xl font-bold mb-2">
+                        Python for Data Science
+                      </h3>
+                      <p className="text-muted-foreground mb-2">Coursera</p>
+                      <p className="text-sm mb-4">Issued: Jan &apos;23</p>
+                      <div className="flex justify-end">
+                        <a
+                          href="/Coursera_DQJZHWLLFBEM.pdf"
+                          className="text-primary hover:underline flex items-center gap-1"
+                        >
+                          View Certificate <ExternalLink size={16} />
+                        </a>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Education Section */}
+        <section id="education" className="py-20 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold mb-12 text-center">Education</h2>
+
+            <div className="max-w-4xl mx-auto space-y-8">
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-2">
+                    Bachelor of Technology - Computer Science and Engineering
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Lovely Professional University, Punjab
+                  </p>
+                  <p className="text-sm">2022 - present</p>
+                  <p className="mt-2">CGPA: 7.29</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-2">Intermediate</h3>
+                  <p className="text-muted-foreground">
+                    Narayana Junior College, Hyderabad
+                  </p>
+                  <p className="text-sm">2020 - 2022</p>
+                  <p className="mt-2">Percentage: 96%</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-2">Matriculation</h3>
+                  <p className="text-muted-foreground">
+                    Bhashyam High School, Guntur
+                  </p>
+                  <p className="text-sm">2019 - 2020</p>
+                  <p className="mt-2">Percentage: 100%</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="contact" className="py-20">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold mb-12 text-center">Contact Me</h2>
+
+            <div className="max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold mb-6">Get In Touch</h3>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4">
+                        <div className="bg-primary/10 p-3 rounded-full">
+                          <Mail className="text-primary" size={24} />
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Email</p>
+                          <p>sontamurohitkumarreddy@gmail.com</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-4">
+                        <div className="bg-primary/10 p-3 rounded-full">
+                          <Linkedin className="text-primary" size={24} />
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">
+                            LinkedIn
+                          </p>
+                          <a
+                            href="https://www.linkedin.com/in/rohitsontamu/"
+                            className="hover:text-primary"
+                          >
+                            linkedin.com/in/rohitsontamu
+                          </a>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-4">
+                        <div className="bg-primary/10 p-3 rounded-full">
+                          <GitHub className="text-primary" size={24} />
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">
+                            GitHub
+                          </p>
+                          <a
+                            href="https://github.com/Rohitsontamu"
+                            className="hover:text-primary"
+                          >
+                            github.com/Rohitsontamu
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold mb-6">Send a Message</h3>
+
+                    <form className="space-y-4">
+                      <div>
+                        <label
+                          htmlFor="name"
+                          className="block text-sm font-medium mb-1"
+                        >
+                          Name
+                        </label>
+                        <input
+                          type="text"
+                          id="name"
+                          className="w-full p-2 border rounded-md bg-background"
+                          placeholder="Your Name"
+                        />
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="email"
+                          className="block text-sm font-medium mb-1"
+                        >
+                          Email
+                        </label>
+                        <input
+                          type="email"
+                          id="email"
+                          className="w-full p-2 border rounded-md bg-background"
+                          placeholder="Your Email"
+                        />
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="message"
+                          className="block text-sm font-medium mb-1"
+                        >
+                          Message
+                        </label>
+                        <textarea
+                          id="message"
+                          rows={4}
+                          className="w-full p-2 border rounded-md bg-background"
+                          placeholder="Your Message"
+                        ></textarea>
+                      </div>
+
+                      <Button className="w-full">Send Message</Button>
+                    </form>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      {/* Footer */}
+      <footer className="bg-muted/50 py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="text-muted-foreground mb-4 md:mb-0">
+              © 2024 Sontamu Rohit Kumar Reddy. All rights reserved.
+            </p>
+
+            <div className="flex space-x-4">
+              <a
+                href="https://www.linkedin.com/in/rohitsontamu/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Linkedin size={20} />
+              </a>
+              <a
+                href="https://github.com/Rohitsontamu"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                <GitHub size={20} />
+              </a>
+              <a
+                href="mailto:sontamurohitkumarreddy@gmail.com"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Mail size={20} />
+              </a>
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   );
