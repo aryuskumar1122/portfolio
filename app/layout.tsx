@@ -6,8 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider"
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Shanyan Sood - Portfolio',
-  description: 'Software Developer & Data Science Enthusiast',
+  title: 'Aryus Kumar Samal - Portfolio',
+  description: 'Software Developer & Machine Learning Enthusiast',
 }
 
 export default function RootLayout({
@@ -20,7 +20,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
