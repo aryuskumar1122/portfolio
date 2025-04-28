@@ -1,9 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu, X, Mail, Github, Linkedin } from "lucide-react";
+import {
+  Menu,
+  X,
+  Mail,
+  Github as GitHub,
+  Linkedin,
+  ExternalLink,
+  ChevronDown,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 
 export default function Home() {
@@ -30,20 +38,8 @@ export default function Home() {
       });
     };
 
-    // Add throttling to the scroll event to improve performance
-    let isScrolling = false;
-    const onScroll = () => {
-      if (!isScrolling) {
-        window.requestAnimationFrame(() => {
-          handleScroll();
-          isScrolling = false;
-        });
-        isScrolling = true;
-      }
-    };
-
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToSection = (sectionId: string) => {
@@ -59,14 +55,16 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-zinc-900">
-      {/* Header - Simplified */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-zinc-100">
-        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <a href="#" className="text-lg font-medium">
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <a href="#" className="text-xl font-bold">
             Aryus Kumar Samal
           </a>
-          <nav className="hidden md:flex space-x-6">
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex space-x-8">
             {[
               "home",
               "about",
@@ -79,27 +77,30 @@ export default function Home() {
               <button
                 key={item}
                 onClick={() => scrollToSection(item)}
-                className={`text-sm hover:text-zinc-500 transition-colors ${
+                className={`text-sm font-medium hover:text-primary transition-colors ${
                   activeSection === item
-                    ? "text-zinc-900 font-medium"
-                    : "text-zinc-500"
+                    ? "text-primary"
+                    : "text-muted-foreground"
                 }`}
               >
                 {item.charAt(0).toUpperCase() + item.slice(1)}
               </button>
             ))}
           </nav>
+
+          {/* Mobile Menu Button */}
           <button
             className="md:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
           >
-            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
+
+        {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white border-b border-zinc-100">
-            <div className="container mx-auto px-4 py-3 flex flex-col space-y-3">
+          <div className="md:hidden bg-background border-b">
+            <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
               {[
                 "home",
                 "about",
@@ -112,10 +113,10 @@ export default function Home() {
                 <button
                   key={item}
                   onClick={() => scrollToSection(item)}
-                  className={`text-sm hover:text-zinc-500 transition-colors text-left ${
+                  className={`text-sm font-medium hover:text-primary transition-colors ${
                     activeSection === item
-                      ? "text-zinc-900 font-medium"
-                      : "text-zinc-500"
+                      ? "text-primary"
+                      : "text-muted-foreground"
                   }`}
                 >
                   {item.charAt(0).toUpperCase() + item.slice(1)}
@@ -127,517 +128,704 @@ export default function Home() {
       </header>
 
       <main>
-        {/* Hero Section - Minimalist */}
-        <section id="home" className="min-h-screen flex items-center pt-16">
+        {/* Hero Section */}
+        <section id="home" className="min-h-screen flex items-center pt-20">
           <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
-              <div className="flex-1 space-y-4">
-                <h1 className="text-3xl md:text-4xl font-medium">
-                  Hi, I&apos;m <span className="font-bold">Aryus Kumar Samal</span>
+            <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+              <div className="flex-1">
+                <h1 className="text-4xl md:text-4xl font-bold mb-4">
+                  Hi, I&apos;m{" "}
+                  <span className="text-primary">Aryus Kumar Samal</span>
                 </h1>
-                <p className="text-lg text-zinc-600">
-                  Software Developer & Machine Learning Enthusiast
+                <p className="text-xl md:text-xl text-muted-foreground mb-8">
+                  Computer Science Student & Data Science Enthusiast
                 </p>
-                <div className="flex flex-wrap gap-3 pt-2">
+                <div className="flex space-x-4">
                   <Button
-                    onClick={() => scrollToSection("contact")}
-                    variant="outline"
-                    className="h-9 rounded-md bg-black hover:bg-zinc-800"
+                    onClick={() => window.open("/ShanyanCV.pdf", "_blank")}
                   >
-                    Contact Me
+                    View Resume
                   </Button>
+
                   <Button
-                    onClick={() => scrollToSection("projects")}
                     variant="outline"
-                    className="h-9 rounded-md bg-black hover:bg-zinc-800"
+                    onClick={() => scrollToSection("projects")}
                   >
                     View Projects
                   </Button>
                 </div>
-                <div className="flex space-x-4 pt-2">
+                <div className="flex mt-8 space-x-4">
                   <a
                     href="https://www.linkedin.com/in/aryus-kumar/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-zinc-500 hover:text-zinc-900 transition-colors"
-                    aria-label="LinkedIn Profile"
+                    className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    <Linkedin size={20} />
+                    <Linkedin size={24} />
                   </a>
                   <a
                     href="https://github.com/aryuskumar1122"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-zinc-500 hover:text-zinc-900 transition-colors"
-                    aria-label="GitHub Profile"
+                    className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    <Github size={20} />
+                    <GitHub size={24} />
                   </a>
                   <a
                     href="mailto:aryuskuamr1122@gmail.com"
-                    className="text-zinc-500 hover:text-zinc-900 transition-colors"
-                    aria-label="Email"
+                    className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    <Mail size={20} />
+                    <Mail size={24} />
                   </a>
                 </div>
               </div>
               <div className="flex-1 flex justify-center">
-                <div className="relative w-56 h-56 md:w-64 md:h-64">
+                <div className="w-64 h-64 md:w-90 md:h-90 rounded-full bg-primary/10 flex items-center justify-center">
                   <Image
-                    src="/profile.jpg"
+                    src="/profile.png"
                     alt="Profile Picture"
                     width={300}
                     height={300}
                     className="rounded-full object-cover"
-                    priority
-                    loading="eager"
                   />
                 </div>
               </div>
             </div>
+            <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce hidden md:block">
+              <ChevronDown size={24} />
+            </div>
           </div>
         </section>
 
-        {/* About Section - Clean and Simple */}
-        <section id="about" className="py-16 bg-zinc-50">
+        {/* About Section */}
+        <section id="about" className="py-20 bg-muted/30">
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-medium mb-8">About Me</h2>
-            <div className="max-w-3xl">
-              <p className="text-zinc-600 mb-4">
-                I&apos;m{" "}
-                <span className="font-medium text-zinc-900">
-                  Aryus Kumar Samal
-                </span>
-                , a Computer Science and Engineering student at Lovely
-                Professional University with a focus on Data Structures,
-                Algorithms, Software Development, and Machine Learning.
+            <h2 className="text-3xl font-bold mb-12 text-center">About Me</h2>
+            <div className="max-w-3xl mx-auto">
+              <p className="text-lg mb-6">
+                I&apos;m Aryus Kumar Samal, a Computer Science and Engineering
+                student at Lovely Professional University with a focus on Data
+                Structures, Algorithms, Software Development, and Machine
+                Learning.
               </p>
-              <p className="text-zinc-600 mb-4">
+              <p className="text-lg mb-6">
                 My expertise includes Java and Python programming, with hands-on
                 experience in frameworks like PyTorch, TensorFlow, Spring, and
-                Hibernate. I&apos;ve worked on Machine Learning projects, Natural
-                Language Processing tasks, and Full-Stack Web Development.
+                Hibernate. I&apos;ve worked on Machine Learning projects,
+                Natural Language Processing tasks, and Full-Stack Web
+                Development.
               </p>
-              <p className="text-zinc-600">
-                I&apos;m highly adaptive, collaborative, and continuously upgrading
-                my skills to match industry standards. My goal is to contribute
-                to cutting-edge technology projects and bridge the gap between
-                theory and practical applications.
+
+              <p className="text-lg">
+                I&apos;m highly adaptive, collaborative, and continuously
+                upgrading my skills to match industry standards. My goal is to
+                contribute to cutting-edge technology projects and bridge the
+                gap between theory and practical applications.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Skills Section - Minimal Cards */}
-        <section id="skills" className="py-16">
+        {/* Skills Section */}
+        <section id="skills" className="py-20">
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-medium mb-8">Skills</h2>
+            <h2 className="text-3xl font-bold mb-12 text-center">Skills</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Languages */}
-              <div className="border border-zinc-100 p-5 rounded-md">
-                <h3 className="text-lg font-medium mb-3">
-                  Programming Languages
-                </h3>
-                <ul className="space-y-2 text-zinc-600">
-                  <li>
-                    <span className="font-medium text-zinc-900">Java</span> –
-                    Core development and data structures
-                  </li>
-                  <li>
-                    <span className="font-medium text-zinc-900">Python</span> –
-                    Machine learning, automation, and scripting
-                  </li>
-                </ul>
-              </div>
-
-              {/* Frameworks */}
-              <div className="border border-zinc-100 p-5 rounded-md">
-                <h3 className="text-lg font-medium mb-3">Frameworks</h3>
-                <ul className="space-y-2 text-zinc-600">
-                  <li>
-                    <span className="font-medium text-zinc-900">PyTorch</span> –
-                    Deep Learning projects
-                  </li>
-                  <li>
-                    <span className="font-medium text-zinc-900">
-                      TensorFlow
-                    </span>{" "}
-                    – Neural Networks and AI models
-                  </li>
-                  <li>
-                    <span className="font-medium text-zinc-900">NLTK</span> –
-                    Natural Language Processing tasks
-                  </li>
-                  <li>
-                    <span className="font-medium text-zinc-900">
-                      Spring & Hibernate
-                    </span>{" "}
-                    – Java Enterprise Applications
-                  </li>
-                </ul>
-              </div>
-
-              {/* Tools & Platforms */}
-              <div className="border border-zinc-100 p-5 rounded-md">
-                <h3 className="text-lg font-medium mb-3">Tools & Platforms</h3>
-                <ul className="space-y-2 text-zinc-600">
-                  <li>
-                    <span className="font-medium text-zinc-900">MySQL</span> –
-                    Database design and management
-                  </li>
-                  <li>
-                    <span className="font-medium text-zinc-900">
-                      Google Colab
-                    </span>{" "}
-                    – Collaborative coding and model training
-                  </li>
-                </ul>
-              </div>
-
-              {/* Soft Skills */}
-              <div className="border border-zinc-100 p-5 rounded-md">
-                <h3 className="text-lg font-medium mb-3">Soft Skills</h3>
-                <ul className="space-y-2 text-zinc-600">
-                  <li>
-                    <span className="font-medium text-zinc-900">
-                      Problem-Solving
-                    </span>{" "}
-                    – Analytical thinking and debugging
-                  </li>
-                  <li>
-                    <span className="font-medium text-zinc-900">
-                      Team Player
-                    </span>{" "}
-                    – Effective communication and collaboration
-                  </li>
-                  <li>
-                    <span className="font-medium text-zinc-900">
-                      Adaptability
-                    </span>{" "}
-                    – Fast learner and flexible to new environments
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Projects Section - Clean Cards */}
-        <section id="projects" className="py-16 bg-zinc-50">
-          <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-medium mb-8">Projects</h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Project 1: StreamNest */}
-              <div className="bg-white border border-zinc-100 p-5 rounded-md">
-                <h3 className="text-lg font-medium mb-3">
-                  StreamNest - Movie Streaming Platform
-                </h3>
-                <p className="text-zinc-600 mb-4">
-                  A full-stack video streaming website with secure
-                  authentication, efficient video management, and responsive UI.
-                  Features an upcoming content-based recommender system.
-                </p>
-                <div className="mb-4">
-                  <h4 className="text-sm font-medium mb-2">Key Features:</h4>
-                  <ul className="text-zinc-600 text-sm space-y-1">
-                    <li>• User Authentication & Session Management</li>
-                    <li>• Video Upload & Streaming</li>
-                    <li>• Responsive UI</li>
-                    <li>• Structured MySQL Database</li>
-                  </ul>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <Badge
-                    variant="secondary"
-                    className="bg-zinc-100 text-zinc-800 hover:bg-zinc-200 font-normal"
-                  >
-                    HTML
-                  </Badge>
-                  <Badge
-                    variant="secondary"
-                    className="bg-zinc-100 text-zinc-800 hover:bg-zinc-200 font-normal"
-                  >
-                    CSS
-                  </Badge>
-                  <Badge
-                    variant="secondary"
-                    className="bg-zinc-100 text-zinc-800 hover:bg-zinc-200 font-normal"
-                  >
-                    JavaScript
-                  </Badge>
-                  <Badge
-                    variant="secondary"
-                    className="bg-zinc-100 text-zinc-800 hover:bg-zinc-200 font-normal"
-                  >
-                    MySQL
-                  </Badge>
-                  <Badge
-                    variant="secondary"
-                    className="bg-zinc-100 text-zinc-800 hover:bg-zinc-200 font-normal"
-                  >
-                    Servlet
-                  </Badge>
-                </div>
-              </div>
-
-              {/* Project 2: GrindX */}
-              <div className="bg-white border border-zinc-100 p-5 rounded-md">
-                <h3 className="text-lg font-medium mb-3">
-                  GrindX - Study Tracker & Recommender
-                </h3>
-                <p className="text-zinc-600 mb-4">
-                  An intelligent study tracking dashboard with live updates,
-                  shareable reports, and a hybrid personalized recommendation
-                  system powered by ML and NLP.
-                </p>
-                <div className="mb-4">
-                  <h4 className="text-sm font-medium mb-2">Key Features:</h4>
-                  <ul className="text-zinc-600 text-sm space-y-1">
-                    <li>• Shareable Dashboards</li>
-                    <li>• Hybrid Recommendation System</li>
-                    <li>• User Profiling</li>
-                    <li>• Machine Learning Models</li>
-                  </ul>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <Badge
-                    variant="secondary"
-                    className="bg-zinc-100 text-zinc-800 hover:bg-zinc-200 font-normal"
-                  >
-                    Python
-                  </Badge>
-                  <Badge
-                    variant="secondary"
-                    className="bg-zinc-100 text-zinc-800 hover:bg-zinc-200 font-normal"
-                  >
-                    PyTorch
-                  </Badge>
-                  <Badge
-                    variant="secondary"
-                    className="bg-zinc-100 text-zinc-800 hover:bg-zinc-200 font-normal"
-                  >
-                    ML
-                  </Badge>
-                  <Badge
-                    variant="secondary"
-                    className="bg-zinc-100 text-zinc-800 hover:bg-zinc-200 font-normal"
-                  >
-                    NLP
-                  </Badge>
-                  <Badge
-                    variant="secondary"
-                    className="bg-zinc-100 text-zinc-800 hover:bg-zinc-200 font-normal"
-                  >
-                    MySQL
-                  </Badge>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Training & Certificates - Simplified */}
-        <section id="training" className="py-16">
-          <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-medium mb-8">
-              Training & Certificates
-            </h2>
-            <div className="space-y-6">
-              {/* Training */}
-              <div className="border-l-2 border-zinc-200 pl-4">
-                <h3 className="text-lg font-medium mb-1">
-                  Data Structures and Algorithms
-                </h3>
-                <p className="text-zinc-500 text-sm mb-2">
-                  GeekForGeeks | June 2024 - August 2024
-                </p>
-                <p className="text-zinc-600 text-sm">
-                  Developed an efficient Sudoku solver using the Backtracking
-                  algorithm with Java.
-                </p>
-              </div>
-
-              {/* Certificates */}
-              <div className="border-l-2 border-zinc-200 pl-4">
-                <h3 className="text-lg font-medium mb-3">Certificates</h3>
-                <ul className="space-y-4">
-                  <li>
-                    <div className="font-medium text-zinc-900">
-                      Complete Generative AI Course
-                    </div>
-                    <div className="text-zinc-500 text-sm">
-                      Udemy | Jan 2025 - Mar 2025
-                    </div>
-                  </li>
-                  <li>
-                    <div className="font-medium text-zinc-900">
-                      NPTEL Cloud Computing 12 Weeks Bootcamp
-                    </div>
-                    <div className="text-zinc-500 text-sm">
-                      Sept 2024 - Dec 2024
-                    </div>
-                  </li>
-                  <li>
-                    <div className="font-medium text-zinc-900">
-                      Complete Data Structures and Algorithms
-                    </div>
-                    <div className="text-zinc-500 text-sm">
-                      GeeksForGeeks | June 2024 - Aug 2024
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Education - Timeline Style */}
-        <section id="education" className="py-16 bg-zinc-50">
-          <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-medium mb-8">Education</h2>
-            <div className="space-y-6">
-              <div className="border-l-2 border-zinc-200 pl-4">
-                <div className="flex flex-col md:flex-row md:items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-medium">
-                      Bachelor of Technology - CSE
+            <div className="max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Programming Languages */}
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold mb-4">
+                      Programming Languages
                     </h3>
-                    <p className="text-zinc-500 text-sm">
-                      Lovely Professional University, Punjab
-                    </p>
-                    <p className="text-zinc-600 text-sm">Since August 2020</p>
-                  </div>
-                  <div className="mt-2 md:mt-0 text-sm font-medium">
-                    CGPA: 7.25
-                  </div>
-                </div>
-              </div>
+                    <div className="space-y-4">
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>Python</span>
+                          <span>90%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "90%" }}
+                          ></div>
+                        </div>
+                      </div>
 
-              <div className="border-l-2 border-zinc-200 pl-4">
-                <div className="flex flex-col md:flex-row md:items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-medium">Intermediate</h3>
-                    <p className="text-zinc-500 text-sm">
-                      Kendriya Vidyalaya Hissar Cantt, Haryana
-                    </p>
-                    <p className="text-zinc-600 text-sm">
-                      April 2019 - March 2021
-                    </p>
-                  </div>
-                  <div className="mt-2 md:mt-0 text-sm font-medium">
-                    Percentage: 91%
-                  </div>
-                </div>
-              </div>
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>Java</span>
+                          <span>85%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "85%" }}
+                          ></div>
+                        </div>
+                      </div>
 
-              <div className="border-l-2 border-zinc-200 pl-4">
-                <div className="flex flex-col md:flex-row md:items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-medium">Matriculation</h3>
-                    <p className="text-zinc-500 text-sm">
-                      Kendriya Vidyalaya Hissar Cantt, Haryana
-                    </p>
-                    <p className="text-zinc-600 text-sm">
-                      April 2016 - March 2018
-                    </p>
-                  </div>
-                  <div className="mt-2 md:mt-0 text-sm font-medium">
-                    Percentage: 84%
-                  </div>
-                </div>
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>Html & CSS</span>
+                          <span>70%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "70%" }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>SQL</span>
+                          <span>80%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "80%" }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Tools & Platforms */}
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold mb-4">
+                      Tools & Platforms
+                    </h3>
+                    <div className="space-y-4">
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>MySQL</span>
+                          <span>85%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "85%" }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>Machine Learning</span>
+                          <span>80%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "80%" }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>Tableau</span>
+                          <span>75%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "75%" }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>Excel</span>
+                          <span>85%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "85%" }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>Docker</span>
+                          <span>95%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "95%" }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span>Jenkins</span>
+                          <span>80%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2"
+                            style={{ width: "80%" }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Soft Skills */}
+                <Card className="md:col-span-2">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold mb-4">Soft Skills</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="bg-primary/10 p-4 rounded-lg">
+                        <h4 className="font-semibold mb-2">Team Player</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Excellent collaboration and communication in group
+                          projects
+                        </p>
+                      </div>
+                      <div className="bg-primary/10 p-4 rounded-lg">
+                        <h4 className="font-semibold mb-2">Adaptability</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Quick to learn and adapt to new technologies and
+                          situations
+                        </p>
+                      </div>
+                      <div className="bg-primary/10 p-4 rounded-lg">
+                        <h4 className="font-semibold mb-2">Time Management</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Efficient in handling multiple tasks and meeting
+                          deadlines
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Contact - Minimal */}
-        <section id="contact" className="py-16">
+        {/* Projects Section */}
+        <section id="projects" className="py-20 bg-muted/30">
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-medium mb-8">Contact</h2>
-            <div className="max-w-lg">
-              <div className="space-y-6">
-                <div className="flex items-center gap-3">
-                  <Mail size={18} className="text-zinc-700" />
-                  <div>
-                    <p className="text-sm text-zinc-500">Email</p>
-                    <a
-                      href="mailto:aryuskuamr1122@gmail.com"
-                      className="text-zinc-900 hover:underline"
-                    >
-                      aryuskuamr1122@gmail.com
-                    </a>
-                  </div>
-                </div>
+            <h2 className="text-3xl font-bold mb-12 text-center">Projects</h2>
 
-                <div className="flex items-center gap-3">
-                  <Linkedin size={18} className="text-zinc-700" />
-                  <div>
-                    <p className="text-sm text-zinc-500">LinkedIn</p>
-                    <a
-                      href="https://www.linkedin.com/in/aryus-kumar/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-zinc-900 hover:underline"
-                    >
-                      linkedin.com/in/aryus-kumar
-                    </a>
-                  </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {/* Project 1 */}
+              <Card className="overflow-hidden">
+                <div className="h-48 bg-primary/20 flex items-center justify-center">
+                  <Image
+                    src="/bird.png"
+                    alt="Profile Picture"
+                    width={300}
+                    height={300}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-
-                <div className="flex items-center gap-3">
-                  <Github size={18} className="text-zinc-700" />
-                  <div>
-                    <p className="text-sm text-zinc-500">GitHub</p>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-2">Cube Game</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Developed a 3D cube game using Unity and C# scripts,
+                    showcasing my skills in game development and designing.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      Python
+                    </span>
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      TensorFlow
+                    </span>
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      Librosa
+                    </span>
+                  </div>
+                  <div className="flex justify-end">
                     <a
                       href="https://github.com/aryuskumar1122"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-zinc-900 hover:underline"
+                      className="text-primary hover:underline flex items-center gap-1"
                     >
-                      github.com/aryuskumar1122
+                      View Project <ExternalLink size={16} />
                     </a>
                   </div>
+                </CardContent>
+              </Card>
+
+              {/* Project 2 */}
+              <Card className="overflow-hidden">
+                <div className="h-48 bg-primary/20 flex items-center justify-center">
+                  <Image
+                    src="/quality1.jpg"
+                    alt="Profile Picture"
+                    width={300}
+                    height={300}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-2">
+                    StreamNest - Movie Streaming Platform
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    A full-stack video streaming website with secure
+                    authentication, efficient video management, and upcoming
+                    content-based recommender system.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      JavaScript
+                    </span>
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      Servlet
+                    </span>
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      Prisma
+                    </span>
+                  </div>
+                  <div className="flex justify-end">
+                    <a
+                      href="https://github.com/aryuskumar1122"
+                      className="text-primary hover:underline flex items-center gap-1"
+                    >
+                      View Project <ExternalLink size={16} />
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Project 3 */}
+              <Card className="overflow-hidden">
+                <div className="h-48 bg-primary/20 flex items-center justify-center">
+                  <Image
+                    src="/crimedata.jpg"
+                    alt="Profile Picture"
+                    width={300}
+                    height={300}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-2">
+                    GrindX - Study Tracker & Recommender
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    An intelligent study tracking dashboard with live updates,
+                    shareable reports, and a hybrid personalized recommendation
+                    system powered by ML and NLP.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      Python
+                    </span>
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      PyTorch
+                    </span>
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                      NLP
+                    </span>
+                  </div>
+                  <div className="flex justify-end">
+                    <a
+                      href="https://github.com/aryuskumar1122"
+                      className="text-primary hover:underline flex items-center gap-1"
+                    >
+                      View Project <ExternalLink size={16} />
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Training Section */}
+        <section id="training" className="py-20">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold mb-12 text-center">
+              Training & Certificates
+            </h2>
+
+            <div className="max-w-4xl mx-auto">
+              <div className="space-y-8">
+                {/* GeeksforGeeks Training */}
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex flex-col md:flex-row justify-between mb-4">
+                      <h3 className="text-xl font-bold">
+                        Data Structures and Algorithms
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Jun &apos;24 – Aug &apos;24
+                      </p>
+                    </div>
+                    <p className="text-muted-foreground mb-2">GeeksforGeeks</p>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li>
+                        Developed an efficient Sudoku solver using the
+                        Backtracking algorithm with Java.
+                      </li>
+                    </ul>
+                    <div className="flex justify-end">
+                      <a
+                        href="/gfg.pdf"
+                        className="text-primary hover:underline flex items-center gap-1"
+                      >
+                        View Certificate <ExternalLink size={16} />
+                      </a>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Certificates */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <Card>
+                    <CardContent className="p-6">
+                      <h3 className="text-xl font-bold mb-2">
+                        Supervised Machine Learning: Regression and
+                        Classification
+                      </h3>
+                      <p className="text-muted-foreground mb-2">Coursera</p>
+                      <p className="text-sm mb-4">Issued: Feb &apos;25</p>
+                      <div className="flex justify-end">
+                        <a
+                          href="/SMLRC.pdf"
+                          className="text-primary hover:underline flex items-center gap-1"
+                        >
+                          View Certificate <ExternalLink size={16} />
+                        </a>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-6">
+                      <h3 className="text-xl font-bold mb-2">
+                        Complete Data Structures and Algorithms
+                      </h3>
+                      <p className="text-muted-foreground mb-2">
+                        GeeksForGeeks{" "}
+                      </p>
+                      <p className="text-sm mb-4">Issued: Jan &apos;23</p>
+                      <div className="flex justify-end">
+                        <a
+                          href="/DAT.pdf"
+                          className="text-primary hover:underline flex items-center gap-1"
+                        >
+                          View Certificate <ExternalLink size={16} />
+                        </a>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Education Section */}
+        <section id="education" className="py-20 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold mb-12 text-center">Education</h2>
+
+            <div className="max-w-4xl mx-auto space-y-8">
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-2">
+                    Bachelor of Technology - Computer Science and Engineering
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Lovely Professional University, Punjab
+                  </p>
+                  <p className="text-sm">2022 - present</p>
+                  <p className="mt-2">CGPA: 7.75</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-2">Intermediate</h3>
+                  <p className="text-muted-foreground">
+                    Kendriya Vidyalaya Hissar Cantt, Haryana
+                  </p>
+                  <p className="text-sm">2020 - 2022</p>
+                  <p className="mt-2">Percentage: 91%</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-2">Matriculation</h3>
+                  <p className="text-muted-foreground">
+                    Kendriya Vidyalaya Hissar Cantt, Haryana
+                  </p>
+                  <p className="text-sm">2019 - 2020</p>
+                  <p className="mt-2">Percentage: 84%</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="contact" className="py-20">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold mb-12 text-center">Contact Me</h2>
+
+            <div className="max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold mb-6">Get In Touch</h3>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4">
+                        <div className="bg-primary/10 p-3 rounded-full">
+                          <Mail className="text-primary" size={24} />
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Email</p>
+                          <p>aryuskuamr1122@gmail.com</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-4">
+                        <div className="bg-primary/10 p-3 rounded-full">
+                          <Linkedin className="text-primary" size={24} />
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">
+                            LinkedIn
+                          </p>
+                          <a
+                            href="linkedin.com/in/aryus-kumar"
+                            className="hover:text-primary"
+                          >
+                            linkedin.com/in/aryus-kumar
+                          </a>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-4">
+                        <div className="bg-primary/10 p-3 rounded-full">
+                          <GitHub className="text-primary" size={24} />
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">
+                            GitHub
+                          </p>
+                          <a
+                            href="github.com/aryuskumar1122"
+                            className="hover:text-primary"
+                          >
+                            github.com/aryuskumar1122
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold mb-6">Send a Message</h3>
+
+                    <form className="space-y-4">
+                      <div>
+                        <label
+                          htmlFor="name"
+                          className="block text-sm font-medium mb-1"
+                        >
+                          Name
+                        </label>
+                        <input
+                          type="text"
+                          id="name"
+                          className="w-full p-2 border rounded-md bg-background"
+                          placeholder="Your Name"
+                        />
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="email"
+                          className="block text-sm font-medium mb-1"
+                        >
+                          Email
+                        </label>
+                        <input
+                          type="email"
+                          id="email"
+                          className="w-full p-2 border rounded-md bg-background"
+                          placeholder="Your Email"
+                        />
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="message"
+                          className="block text-sm font-medium mb-1"
+                        >
+                          Message
+                        </label>
+                        <textarea
+                          id="message"
+                          rows={4}
+                          className="w-full p-2 border rounded-md bg-background"
+                          placeholder="Your Message"
+                        ></textarea>
+                      </div>
+
+                      <Button className="w-full">Send Message</Button>
+                    </form>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="py-8 border-t border-zinc-100">
+      {/* Footer */}
+      <footer className="bg-muted/50 py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-zinc-500 text-sm mb-4 md:mb-0">
-              © 2025 Aryus Kumar Samal
+            <p className="text-muted-foreground mb-4 md:mb-0">
+              © 2024 Aryus Kumar Samal. All rights reserved.
             </p>
+
             <div className="flex space-x-4">
               <a
-                href="https://www.linkedin.com/in/aryus-kumar/"
+                href="https://www.linkedin.com/in/shanyan-sood-6b4732325/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-zinc-500 hover:text-zinc-900 transition-colors"
-                aria-label="LinkedIn"
+                className="text-muted-foreground hover:text-primary transition-colors"
               >
-                <Linkedin size={18} />
+                <Linkedin size={20} />
               </a>
               <a
                 href="https://github.com/aryuskumar1122"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-zinc-500 hover:text-zinc-900 transition-colors"
-                aria-label="GitHub"
+                className="text-muted-foreground hover:text-primary transition-colors"
               >
-                <Github size={18} />
+                <GitHub size={20} />
               </a>
               <a
-                href="mailto:aryuskuamr1122@gmail.com"
-                className="text-zinc-500 hover:text-zinc-900 transition-colors"
-                aria-label="Email"
+                href="mailto:shanyansood862@gmai.com"
+                className="text-muted-foreground hover:text-primary transition-colors"
               >
-                <Mail size={18} />
+                <Mail size={20} />
               </a>
             </div>
           </div>
@@ -646,3 +834,4 @@ export default function Home() {
     </div>
   );
 }
+
